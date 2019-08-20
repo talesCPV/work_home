@@ -7,7 +7,7 @@ pixel_width = 5
 
 class CHR:
     def __init__(self,raiz):
-        self.canvas = Canvas(raiz, width=640, height=640, bg='white')
+        self.canvas = Canvas(raiz, width=940, height=640, bg='white')
         self.canvas.pack()
 
     def draw_tile(self,tile, lin=0, col=0):
@@ -20,7 +20,7 @@ class CHR:
                 ret(pos[0], pos[1], pos[0]+pixel_width, pos[1]+pixel_width, fill=palette[tile[x][y]])
                 pos[0] += pixel_width
 
-            pos[0] = 0
+            pos[0] = col * 8
             pos[1] += pixel_width
 
     def convert(self,tile):
@@ -47,9 +47,10 @@ class CHR:
 
 
     def abrir(self):
-        with open("data/2.chr", "rb") as f:
+        with open("data/mario.chr", "rb") as f:
             for line in f:
                 count = 0
+                line_count = 0
                 tile = []
                 drop_row = 0
                 drop_col = 0
@@ -66,8 +67,13 @@ class CHR:
                         drop_col +=1
                         if drop_col > 15:
                             drop_col = 0
+                            drop_row += 1
 
-                            return
+                    line_count += 1
+
+                    if line_count >= 640:
+                        return
+
 
 
 
