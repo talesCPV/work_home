@@ -23,6 +23,19 @@ class CHR:
             pos[0] = col * 8
             pos[1] += pixel_width
 
+    def grid(self,show=True,size=5,color='white'):
+        if show:
+            x = size * 8
+            for i in range(16):
+                self.canvas.create_line(x,0, x, size*128, fill=color)
+                x += (size*8)
+            y = size * 8
+            for i in range(16):
+                self.canvas.create_line(0,y, size*128, y, fill=color)
+                y += (size*8)
+
+
+
     def convert(self,tile):
         col = []
         for x in range(8):
@@ -45,11 +58,11 @@ class CHR:
         return col
 
     def abrir(self):
-        with open("data/mario.chr", "rb") as f:
+        with open("data/r.chr", "rb") as f:
+            drop_row = 0
             for line in f:
                 count = 0
                 tile = []
-                drop_row = 0
                 drop_col = 0
                 tile_count = 1
                 for x in line:
@@ -57,114 +70,41 @@ class CHR:
                     count += 1
                     if count == 16:
                         my_tile = self.convert(tile)
-                        print(my_tile)
+#                        print(my_tile)
                         tile_count += 1
                         tile = []
                         count = 0
                         self.draw_tile(my_tile,(drop_row*pixel_width),(drop_col*pixel_width))
+                        self.grid(color="yellow")
                         drop_col +=1
                         if drop_col > 16:
                             drop_col = 0
                             drop_row += 1
 
-
-                        if tile_count > 50:
+                        if tile_count > 80:
                             return
 
 
 class Palette:
     def __init__(self, raiz):
-        self.canvas = Canvas(raiz, width=430, height=200, bg='white')
+        self.canvas = Canvas(raiz, width=430, height=640, bg='white')
         self.canvas.pack()
 
     def draw(self):
+        colors = ("dim gray","gray","white smoke","white","medium blue","DodgerBlue2","DeepSkyBlue2","LightSkyBlue2","blue2","DodgerBlue3","light steel blue","snow3","MediumPurple4","SlateBlue2","MediumPurple1","thistle",
+                  "maroon3","maroon1","PaleVioletRed1","plum1","red3","deep pink","PaleVioletRed2","LightPink1","red3","orange red","tomato","light pink","brown4","dark orange","tan1","wheat1","DarkOrange4","orange3",
+                  "goldenrod1","LightGoldenrod2","SpringGreen4","green3","green yellow","DarkOliveGreen1","green4","chartreuse3","yellow green","PaleGreen1","dark green","aquamarine4","SeaGreen2","DarkSeaGreen1","DodgerBlue4",
+                  "DeepSkyBlue3","turquoise","cyan","black","gray5","gray40","gray90")
         col = 0
-        width = 30
+        width = 30 # Largura e altura do quadrado da cor
+        multiply = 0
         ret=self.canvas.create_rectangle
-        #Col 01
-        ret(col,0, col+width,width, fill="dim gray")
-        ret(col,width, col+width,width*2, fill="gray")
-        ret(col,width*2, col+width,width*3, fill="white smoke")
-        ret(col,width*3, col+width,width*4, fill="white")
-        col += width
-        #Col 02
-        ret(col,0, col+width,width, fill="medium blue")
-        ret(col,width, col+width,width*2, fill="DodgerBlue2")
-        ret(col,width*2, col+width,width*3, fill="DeepSkyBlue2")
-        ret(col,width*3, col+width,width*4, fill="LightSkyBlue2")
-        col += width
-        #Col 03
-        ret(col,0, col+width,width, fill="blue2")
-        ret(col,width, col+width,width*2, fill="DodgerBlue3")
-        ret(col,width*2, col+width,width*3, fill="light steel blue")
-        ret(col,width*3, col+width,width*4, fill="snow3")
-        col += width
-        #Col 04
-        ret(col,0, col+width,width, fill="MediumPurple4")
-        ret(col,width, col+width,width*2, fill="SlateBlue2")
-        ret(col,width*2, col+width,width*3, fill="MediumPurple1")
-        ret(col,width*3, col+width,width*4, fill="thistle")
-        col += width
-        #Col 05
-        ret(col,0, col+width,width, fill="maroon3")
-        ret(col,width, col+width,width*2, fill="maroon1")
-        ret(col,width*2, col+width,width*3, fill="PaleVioletRed1")
-        ret(col,width*3, col+width,width*4, fill="plum1")
-        col += width
-        #Col 06
-        ret(col,0, col+width,width, fill="red3")
-        ret(col,width, col+width,width*2, fill="deep pink")
-        ret(col,width*2, col+width,width*3, fill="PaleVioletRed2")
-        ret(col,width*3, col+width,width*4, fill="LightPink1")
-        col += width
-        #Col 07
-        ret(col,0, col+width,width, fill="red3")
-        ret(col,width, col+width,width*2, fill="orange red")
-        ret(col,width*2, col+width,width*3, fill="tomato")
-        ret(col,width*3, col+width,width*4, fill="light pink")
-        col += width
-        #Col 08
-        ret(col,0, col+width,width, fill="brown4")
-        ret(col,width, col+width,width*2, fill="dark orange")
-        ret(col,width*2, col+width,width*3, fill="tan1")
-        ret(col,width*3, col+width,width*4, fill="wheat1")
-        col += width
-        #Col 09
-        ret(col,0, col+width,width, fill="DarkOrange4")
-        ret(col,width, col+width,width*2, fill="orange3")
-        ret(col,width*2, col+width,width*3, fill="goldenrod1")
-        ret(col,width*3, col+width,width*4, fill="LightGoldenrod2")
-        col += width
-        #Col 10
-        ret(col,0, col+width,width, fill="SpringGreen4")
-        ret(col,width, col+width,width*2, fill="green3")
-        ret(col,width*2, col+width,width*3, fill="green yellow")
-        ret(col,width*3, col+width,width*4, fill="DarkOliveGreen1")
-        col += width
-        #Col 11
-        ret(col,0, col+width,width, fill="green4")
-        ret(col,width, col+width,width*2, fill="chartreuse3")
-        ret(col,width*2, col+width,width*3, fill="yellow green")
-        ret(col,width*3, col+width,width*4, fill="PaleGreen1")
-        col += width
-        #Col 12
-        ret(col,0, col+width,width, fill="dark green")
-        ret(col,width, col+width,width*2, fill="aquamarine4")
-        ret(col,width*2, col+width,width*3, fill="SeaGreen2")
-        ret(col,width*3, col+width,width*4, fill="DarkSeaGreen1")
-        col += width
-        #Col 13
-        ret(col,0, col+width,width, fill="DodgerBlue4")
-        ret(col,width, col+width,width*2, fill="DeepSkyBlue3")
-        ret(col,width*2, col+width,width*3, fill="turquoise")
-        ret(col,width*3, col+width,width*4, fill="cyan")
-        col += width
-        #Col 14
-        ret(col,0, col+width,width, fill="black")
-        ret(col,width, col+width,width*2, fill="gray5")
-        ret(col,width*2, col+width,width*3, fill="gray40")
-        ret(col,width*3, col+width,width*4, fill="gray90")
-        col += width
+        for i in range(56):
+            ret(col, multiply*width, col + width, (multiply+1)*width,  fill=colors[i])
+            multiply += 1
+            if multiply >3:
+                multiply = 0
+                col += width
 
 
 
