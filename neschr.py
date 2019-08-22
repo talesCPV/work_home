@@ -1,16 +1,14 @@
 #!/usr/bin/python3
 
 from tkinter import *
-
-palette = ['black','red','purple','green']
-pixel_width = 5
+#from tkinter import filedialog
 
 class CHR:
     def __init__(self,raiz):
         self.canvas = Canvas(raiz, width=640, height=640, bg='white')
         self.canvas.pack(side=LEFT)
 
-    def draw_tile(self,tile, lin=0, col=0):
+    def draw_tile(self,tile, lin=0, col=0, pixel_width = 5, palette = ['black','red','purple','green']):
         pos = [0,0]
         pos[0] = col * 8
         pos[1] = lin * 8
@@ -57,8 +55,8 @@ class CHR:
             col.append(row)
         return col
 
-    def abrir(self):
-        with open("data/r.chr", "rb") as f:
+    def abrir(self,chr_file, pixel_width = 5):
+        with open(chr_file, "rb") as f:
             drop_row = 0
             for line in f:
                 count = 0
@@ -81,8 +79,19 @@ class CHR:
                             drop_col = 0
                             drop_row += 1
 
-                        if tile_count > 80:
-                            return
+    def new(self):
+        try:
+            new_chr = open("data/new.chr", "w+b")
+            tile = b'\x00' * 16
+
+            for row in range(1):
+#                new_chr.seek(0)
+                new_chr.write(tile*271) #  each tile has 8 lines with 2 bytes -> 16 tiles is the first line
+
+            new_chr.close()
+            self.abrir('data/new.chr')
+        except IOError:
+            print('erro!!!')
 
 
 class Palette:
@@ -106,13 +115,3 @@ class Palette:
                 multiply = 0
                 col += width
 
-
-
-instancia=Tk()
-instancia.title('Open NES CHR')
-teste = CHR(instancia)
-pal = Palette(instancia)
-teste.abrir()
-pal.draw()
-
-instancia.mainloop()

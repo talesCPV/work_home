@@ -18,7 +18,7 @@ menubar.add_cascade(label='Ajuda', menu=filemenu3)
 def Open(): filedialog.askopenfilename()
 def Save(): filedialog.asksaveasfilename()
 def Quit(): root.destroy()
-def ColorBlue(): Text(background='blue').pack()
+ColorBlue = lambda: Text(bg='blue').pack()
 def ColorRed(): Text(background='red').pack()
 def ColorBlack(): Text(background='black').pack()
 def Help():
