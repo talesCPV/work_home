@@ -15,23 +15,42 @@ def res():
 def create_menu(root):
     menubar = Menu(root)
     def abrir():
-        arq = filedialog.askopenfilename(title="Choose you CHR file", filetypes=(('CHR file', '*.chr'), ('all files', '*.*')))
-        teste.abrir(arq)
+        try:
+            chr_file = filedialog.askopenfilename(title="Choose you CHR file", filetypes=(('CHR file', '*.chr'), ('all files', '*.*')))
+            screen.abrir(chr_file)
+            root.title('Open NES CHR - ' + chr_file)
+        except:
+            print('Canceled by user!')
+            
+    def save_as():
+        chr_file = filedialog.asksaveasfilename(title="Save your file", filetypes=(('CHR file', '*.chr'), ('all files', '*.*')))
+        save()
+        root.title('Open NES CHR - ' + chr_file)
 
-    salvar = lambda: filedialog.asksaveasfilename(title="Save your file", filetypes=(('CHR file', '*.chr'), ('all files', '*.*')))
+    def save():
+        print(chr_file)
+        if chr_file:
+            print('entrou')
+            try:
+                new_chr = open(chr_file, "w+b")
+                new_chr.write(Nes.buffer)
+                new_chr.close()
+            except IOError:
+                print('erro!!!!')
+
     sair = lambda: exit()
-    nova = lambda: teste.new()
+    nova = lambda: screen.new()
     root.config(menu=menubar)
 
     filemenu = Menu(menubar)
 
     menubar.add_cascade(label='File', menu=filemenu)
-    filemenu.add_command(label='New', command=nova)  # command=function
-    filemenu.add_command(label='Open', command=abrir)  # command=function
-    filemenu.add_command(label='Save')  # command=function
-    filemenu.add_command(label='Save as...', command=salvar)  # command=function
+    filemenu.add_command(label='New', command=nova)
+    filemenu.add_command(label='Open', command=abrir)
+    filemenu.add_command(label='Save', command=save)
+    filemenu.add_command(label='Save as...', command=save_as)
     filemenu.add_separator()
-    filemenu.add_command(label='Exit', command=sair)  # command=function
+    filemenu.add_command(label='Exit', command=sair)
 
 
 
@@ -40,17 +59,17 @@ def create_menu(root):
 
 root=Tk()
 root.title('Open NES CHR')
-
 create_menu(root)
+chr_file = ''
 
-teste = Nes.CHR(root)
+screen = Nes.CHR(root)
 pal = Nes.Palette(root)
 
-#text = Text(pal)
+text = pal.canvas.create_text(50,130, text='teste')
 #text.pack();
-#text.insert('insert', 'Ao clicar no botão ')
 
-teste.abrir('data/mario.chr')
+
+#teste.abrir('data/mario.chr')
 pal.draw()
 
 root.mainloop()

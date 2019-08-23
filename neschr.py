@@ -1,7 +1,10 @@
 #!/usr/bin/python3
 
 from tkinter import *
-#from tkinter import filedialog
+from tkinter import filedialog
+
+buffer = bytearray()
+chr_file = ''
 
 class CHR:
     def __init__(self,raiz):
@@ -31,8 +34,6 @@ class CHR:
             for i in range(16):
                 self.canvas.create_line(0,y, size*128, y, fill=color)
                 y += (size*8)
-
-
 
     def convert(self,tile):
         col = []
@@ -64,6 +65,7 @@ class CHR:
                 drop_col = 0
                 tile_count = 1
                 for x in line:
+                    buffer.append(x)
                     tile.append('{0:0>8} '.format(bin(x)[2:]))
                     count += 1
                     if count == 16:
@@ -83,15 +85,32 @@ class CHR:
         try:
             new_chr = open("data/new.chr", "w+b")
             tile = b'\x00' * 16
-
+            chr_mem = bytearray()
             for row in range(1):
-#                new_chr.seek(0)
+                chr_mem += tile
                 new_chr.write(tile*271) #  each tile has 8 lines with 2 bytes -> 16 tiles is the first line
 
             new_chr.close()
             self.abrir('data/new.chr')
         except IOError:
             print('erro!!!')
+
+    def save(self,chr_file):
+        print(chr_file)
+        if chr_file:
+            print('entrou')
+            try:
+                new_chr = open(chr_file, "w+b")
+                new_chr.write(Nes.buffer)
+                new_chr.close()
+            except IOError:
+                print('erro!!!!')
+
+    def save_as(self):
+        chr_file = filedialog.asksaveasfilename(title="Save your file", filetypes=(('CHR file', '*.chr'), ('all files', '*.*')))
+        save(chr_file)
+#        root.title('Open NES CHR - ' + chr_file)
+
 
 
 class Palette:
