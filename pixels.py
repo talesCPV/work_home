@@ -14,6 +14,9 @@ def res():
 
 def create_menu(root):
     menubar = Menu(root)
+    grid = IntVar()
+
+
     def abrir():
         try:
             chr_file = filedialog.askopenfilename(title="Choose you CHR file", filetypes=(('CHR file', '*.chr'), ('all files', '*.*')))
@@ -38,11 +41,18 @@ def create_menu(root):
             except IOError:
                 print('erro!!!!')
 
+    def showgrid():
+        if grid.get():
+            screen.grid()
+        else:
+            screen.load(Nes.buffer)
+
     sair = lambda: exit()
     nova = lambda: screen.new()
     root.config(menu=menubar)
 
-    filemenu = Menu(menubar)
+    filemenu = Menu(menubar, tearoff=0)
+    tollmenu = Menu(menubar)
 
     menubar.add_cascade(label='File', menu=filemenu)
     filemenu.add_command(label='New', command=nova)
@@ -52,7 +62,8 @@ def create_menu(root):
     filemenu.add_separator()
     filemenu.add_command(label='Exit', command=sair)
 
-
+    menubar.add_cascade(label='Tolls', menu=tollmenu)
+    tollmenu.add_checkbutton(label='Show Grid', variable=grid, onvalue=1, offvalue=0,  command=showgrid)
 
 
 
@@ -62,14 +73,18 @@ root.title('Open NES CHR')
 create_menu(root)
 chr_file = ''
 
+
 screen = Nes.CHR(root)
+
 pal = Nes.Palette(root)
 
-text = pal.canvas.create_text(50,130, text='teste')
+
+#text = pal.canvas.create_text(50,130, text='teste')
+
 #text.pack();
 
 
-#teste.abrir('data/mario.chr')
+screen.abrir('data/mario.chr')
 pal.draw()
 
 root.mainloop()

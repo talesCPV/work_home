@@ -5,8 +5,6 @@ from tkinter import filedialog
 
 buffer = bytearray()
 chr_file = ''
-page = 0
-
 
 class CHR:
     def __init__(self,raiz):
@@ -14,8 +12,9 @@ class CHR:
         self.canvas.pack(side=LEFT)
 
     def draw_tile(self,tile, lin=0, col=0, pixel_width = 5, palette = ['black','red','purple','green']):
-        pos = [col * 8,lin * 8]
-
+        pos = [0,0]
+        pos[0] = col * 8
+        pos[1] = lin * 8
         ret=self.canvas.create_rectangle
         for x in range(8):
             for y in range(8):
@@ -42,7 +41,7 @@ class CHR:
             row = []
             for y in range(8):
                 a = int(tile[x][y])
-                b = int(tile[x + 8][y])
+                b = int(tile[x+8][y])
                 if a:
                     if b:
                         cor = 3
@@ -57,48 +56,42 @@ class CHR:
             col.append(row)
         return col
 
-    def abrir(self,chr_file):
-        buffer.clear()
+    def abrir(self,chr_file, pixel_width = 5):
         with open(chr_file, "rb") as f:
+            drop_row = 0
             for line in f:
+                count = 0
                 tile = []
+                drop_col = 0
+                tile_count = 1
                 for x in line:
                     buffer.append(x)
                     tile.append('{0:0>8} '.format(bin(x)[2:]))
-        self.load(buffer, grid=False)
-
-    def load(self,buff, pixel_width = 5, grid=False):
-        tile = []
-        count = 0
-        drop_row = 0
-        drop_col = 0
-        tile_count = 1
-        for x in buff:
-            tile.append('{0:0>8} '.format(bin(x)[2:]))
-            count += 1
-            if count == 16:
-                my_tile = self.convert(tile)
-                tile_count += 1
-                tile = []
-                count = 0
-                self.draw_tile(my_tile, (drop_row * pixel_width), (drop_col * pixel_width))
-                drop_col += 1
-                if drop_col > 15:
-                    drop_col = 0
-                    drop_row += 1
-        if grid:
-            self.grid(color="yellow")
-
+                    count += 1
+                    if count == 16:
+                        my_tile = self.convert(tile)
+#                        print(my_tile)
+                        tile_count += 1
+                        tile = []
+                        count = 0
+                        self.draw_tile(my_tile,(drop_row*pixel_width),(drop_col*pixel_width))
+                        self.grid(color="yellow")
+                        drop_col +=1
+                        if drop_col > 16:
+                            drop_col = 0
+                            drop_row += 1
 
     def new(self):
         try:
-            chr_mem = bytearray()
-            chr_mem += b'\x00' * 16 # 1 tile
             new_chr = open("data/new.chr", "w+b")
-            new_chr.write(chr_mem*271)
+            tile = b'\x00' * 16
+            chr_mem = bytearray()
+            for row in range(1):
+                chr_mem += tile
+                new_chr.write(tile*271) #  each tile has 8 lines with 2 bytes -> 16 tiles is the first line
+
             new_chr.close()
-#            self.abrir('data/new.chr')
-            self.load(chr_mem*256)
+            self.abrir('data/new.chr')
         except IOError:
             print('erro!!!')
 
@@ -122,7 +115,7 @@ class CHR:
 
 class Palette:
     def __init__(self, raiz):
-        self.canvas = Canvas(raiz, width=430, height=120, bg='white')
+        self.canvas = Canvas(raiz, width=430, height=640, bg='white')
         self.canvas.pack()
 
     def draw(self):
@@ -130,7 +123,6 @@ class Palette:
                   "maroon3","maroon1","PaleVioletRed1","plum1","red3","deep pink","PaleVioletRed2","LightPink1","red3","orange red","tomato","light pink","brown4","dark orange","tan1","wheat1","DarkOrange4","orange3",
                   "goldenrod1","LightGoldenrod2","SpringGreen4","green3","green yellow","DarkOliveGreen1","green4","chartreuse3","yellow green","PaleGreen1","dark green","aquamarine4","SeaGreen2","DarkSeaGreen1","DodgerBlue4",
                   "DeepSkyBlue3","turquoise","cyan","black","gray5","gray40","gray90")
-
         col = 0
         width = 30 # Largura e altura do quadrado da cor
         multiply = 0
