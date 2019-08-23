@@ -45,7 +45,7 @@ def create_menu(root):
         if grid.get():
             screen.grid()
         else:
-            screen.load(Nes.buffer)
+            screen.canvas.delete('linha','coluna')
 
     sair = lambda: exit()
     nova = lambda: screen.new()
@@ -84,7 +84,7 @@ pal = Nes.Palette(root)
 #text.pack();
 
 
-screen.abrir('data/mario.chr')
+#screen.abrir('data/mario.chr')
 pal.draw()
 
 root.mainloop()

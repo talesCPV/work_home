@@ -6,6 +6,15 @@ from tkinter import filedialog
 buffer = bytearray()
 chr_file = ''
 page = 0
+palette_width = 30
+
+colors = ("dim gray", "gray", "white smoke", "white", "medium blue", "DodgerBlue2", "DeepSkyBlue2", "LightSkyBlue2", "blue2",
+        "DodgerBlue3", "light steel blue", "snow3", "MediumPurple4", "SlateBlue2", "MediumPurple1", "thistle",
+        "maroon3", "maroon1", "PaleVioletRed1", "plum1", "red3", "deep pink", "PaleVioletRed2", "LightPink1", "red3",
+        "orange red", "tomato", "light pink", "brown4", "dark orange", "tan1", "wheat1", "DarkOrange4", "orange3",
+        "goldenrod1", "LightGoldenrod2", "SpringGreen4", "green3", "green yellow", "DarkOliveGreen1", "green4", "chartreuse3",
+        "yellow green", "PaleGreen1", "dark green", "aquamarine4", "SeaGreen2", "DarkSeaGreen1", "DodgerBlue4",
+        "DeepSkyBlue3", "turquoise", "cyan", "black", "gray5", "gray40", "gray90")
 
 
 class CHR:
@@ -29,11 +38,11 @@ class CHR:
         if show:
             x = size * 8
             for i in range(16):
-                self.canvas.create_line(x,0, x, size*128, fill=color)
+                self.canvas.create_line(x,0, x, size*128, fill=color, tag='linha')
                 x += (size*8)
             y = size * 8
             for i in range(16):
-                self.canvas.create_line(0,y, size*128, y, fill=color)
+                self.canvas.create_line(0,y, size*128, y, fill=color, tag='coluna')
                 y += (size*8)
 
     def convert(self,tile):
@@ -97,7 +106,6 @@ class CHR:
             new_chr = open("data/new.chr", "w+b")
             new_chr.write(chr_mem*271)
             new_chr.close()
-#            self.abrir('data/new.chr')
             self.load(chr_mem*256)
         except IOError:
             print('erro!!!')
@@ -116,7 +124,7 @@ class CHR:
     def save_as(self):
         chr_file = filedialog.asksaveasfilename(title="Save your file", filetypes=(('CHR file', '*.chr'), ('all files', '*.*')))
         save(chr_file)
-#        root.title('Open NES CHR - ' + chr_file)
+
 
 
 
@@ -126,13 +134,8 @@ class Palette:
         self.canvas.pack()
 
     def draw(self):
-        colors = ("dim gray","gray","white smoke","white","medium blue","DodgerBlue2","DeepSkyBlue2","LightSkyBlue2","blue2","DodgerBlue3","light steel blue","snow3","MediumPurple4","SlateBlue2","MediumPurple1","thistle",
-                  "maroon3","maroon1","PaleVioletRed1","plum1","red3","deep pink","PaleVioletRed2","LightPink1","red3","orange red","tomato","light pink","brown4","dark orange","tan1","wheat1","DarkOrange4","orange3",
-                  "goldenrod1","LightGoldenrod2","SpringGreen4","green3","green yellow","DarkOliveGreen1","green4","chartreuse3","yellow green","PaleGreen1","dark green","aquamarine4","SeaGreen2","DarkSeaGreen1","DodgerBlue4",
-                  "DeepSkyBlue3","turquoise","cyan","black","gray5","gray40","gray90")
-
-        col = 0
-        width = 30 # Largura e altura do quadrado da cor
+        col = 5
+        width = palette_width # Largura e altura do quadrado da cor
         multiply = 0
         ret=self.canvas.create_rectangle
         for i in range(56):
